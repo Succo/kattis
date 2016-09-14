@@ -10,9 +10,9 @@ import (
 
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
-	r := 1000
-	c := 1000
-	n := 1000
+	r := 80
+	c := 80
+	n := 200
 	fmt.Printf("%d %d\n", r, c)
 	for i := 0; i < r; i++ {
 		var line bytes.Buffer

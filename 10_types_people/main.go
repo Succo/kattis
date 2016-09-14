@@ -1,9 +1,9 @@
 package main
 
 import (
-	// "bytes"
+	"bufio"
 	"fmt"
-	"github.com/fatih/color"
+	"os"
 	"strconv"
 	"time"
 )
@@ -22,12 +22,16 @@ func main() {
 		start = time.Now()
 	}
 	var r, c int
-	fmt.Scanln(&r, &c)
+	in := bufio.NewReader(os.Stdin)
+	fmt.Fscanln(in, &r, &c)
 	area := make([][]contiguous, r)
 	for i := 0; i < r; i++ {
 		area[i] = []contiguous{}
-		var line string
-		fmt.Scanln(&line)
+		line, err := in.ReadString('\n')
+		if err != nil {
+			panic("error reading stdin")
+		}
+		line = line[:len(line)-1]
 		presentZone := contiguous{value: 2}
 		for index, j := range line {
 			value, _ := strconv.Atoi(string(j))
@@ -47,7 +51,7 @@ func main() {
 		area[i] = append(area[i], presentZone)
 	}
 	var n int
-	fmt.Scanln(&n)
+	fmt.Fscanln(in, &n)
 	if timing {
 		fmt.Printf("Parsing %s \n", time.Since(start))
 		step1 = time.Now()
@@ -65,7 +69,7 @@ func main() {
 
 	for i := 0; i < n; i++ {
 		var r1, c1, r2, c2 int
-		fmt.Scanln(&r1, &c1, &r2, &c2)
+		fmt.Fscanln(in, &r1, &c1, &r2, &c2)
 		r1 = r1 - 1
 		c1 = c1 - 1
 		r2 = r2 - 1
@@ -99,36 +103,7 @@ func main() {
 		fmt.Printf("Pathing %s \n", time.Since(step1))
 	}
 	// printArea(area, convex)
-}
 
-func printArea(area [][]contiguous, convex [][]contiguous) {
-	colors := []color.Attribute{color.FgWhite, color.FgRed, color.FgGreen, color.FgYellow, color.FgBlue, color.FgMagenta, color.FgCyan}
-	for i, line := range area {
-		if i < 10 {
-			fmt.Print("0")
-		}
-		fmt.Printf("%d ", i)
-		for j, subZone := range line {
-			for index := subZone.x; index <= subZone.y; index++ {
-				zoneColor := color.New(colors[convex[i][j].value%7])
-				zoneColor.Print(strconv.Itoa(subZone.value))
-
-			}
-		}
-		fmt.Print("   ")
-		for j, subZone := range convex[i] {
-			for index := subZone.x; index <= subZone.y; index++ {
-				zoneColor := color.New(colors[(area[i][j].value+1)%7])
-				// big hack
-				if subZone.value < 10 {
-					zoneColor.Print("0")
-				}
-				zoneColor.Print(strconv.Itoa(subZone.value))
-
-			}
-		}
-		fmt.Println("")
-	}
 }
 
 func getValue(area [][]contiguous, i int, j int) int {

@@ -2,10 +2,8 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -13,7 +11,7 @@ const ()
 
 func main() {
 	var start, step1 time.Time
-	timing := true
+	timing := false
 	if timing {
 		start = time.Now()
 	}
@@ -26,7 +24,7 @@ func main() {
 		if err != nil {
 			panic("error reading stdin")
 		}
-		area[i] = line
+		area[i] = line[:len(line)-1]
 	}
 	var n int
 	fmt.Fscanln(in, &n)
@@ -35,15 +33,10 @@ func main() {
 		step1 = time.Now()
 	}
 
-	convex := make([]string, len(area))
-	var buffer bytes.Buffer
-
-	for i := 0; i < c; i++ {
-		buffer.WriteString("0")
-	}
+	convex := make([][]int, len(area))
 
 	for i := 0; i < r; i++ {
-		convex[i] = buffer.String()
+		convex[i] = make([]int, c)
 	}
 	zone := 1
 
@@ -54,13 +47,14 @@ func main() {
 		c1 = c1 - 1
 		r2 = r2 - 1
 		c2 = c2 - 1
+		fmt.Printf("%d ", i)
 		if area[r1][c1] != area[r2][c2] {
 			if !timing {
 				fmt.Println("neither")
 			}
 			continue
 		}
-		if convex[r1][c1] == byte(48) && convex[r2][c2] == byte(48) {
+		if convex[r1][c1] == 0 && convex[r2][c2] == 0 {
 			convex = propagate(area, convex, r1, c1, zone)
 			zone++
 		}
@@ -81,16 +75,14 @@ func main() {
 	if timing {
 		fmt.Printf("Pathing %s \n", time.Since(step1))
 	}
-	// for _, line := range area {
-	// 	fmt.Println(line)
-	// }
+	printArea(area, convex)
 }
 
-func propagate(area []string, convex []string, startI int, startJ int, zone int) []string {
-	if convex[startI][startJ] != byte(48) {
+func propagate(area []string, convex [][]int, startI int, startJ int, zone int) [][]int {
+	if convex[startI][startJ] != 0 {
 		return convex
 	}
-	convex[startI] = convex[startI][:startJ] + strconv.Itoa(zone) + convex[startI][startJ+1:]
+	convex[startI][startJ] = zone
 
 	if startI+1 < len(area) && area[startI][startJ] == area[startI+1][startJ] {
 		convex = propagate(area, convex, startI+1, startJ, zone)
