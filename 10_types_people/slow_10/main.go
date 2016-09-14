@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 )
@@ -15,14 +17,19 @@ func main() {
 	if timing {
 		start = time.Now()
 	}
+	in := bufio.NewReader(os.Stdin)
 	var r, c int
-	fmt.Scanln(&r, &c)
+	fmt.Fscanln(in, &r, &c)
 	area := make([]string, r)
 	for i := 0; i < r; i++ {
-		fmt.Scanln(&area[i])
+		line, err := in.ReadString('\n')
+		if err != nil {
+			panic("error reading stdin")
+		}
+		area[i] = line
 	}
 	var n int
-	fmt.Scanln(&n)
+	fmt.Fscanln(in, &n)
 	if timing {
 		fmt.Printf("Parsing %s \n", time.Since(start))
 		step1 = time.Now()
@@ -42,7 +49,7 @@ func main() {
 
 	for i := 0; i < n; i++ {
 		var r1, c1, r2, c2 int
-		fmt.Scanln(&r1, &c1, &r2, &c2)
+		fmt.Fscanln(in, &r1, &c1, &r2, &c2)
 		r1 = r1 - 1
 		c1 = c1 - 1
 		r2 = r2 - 1
@@ -74,7 +81,7 @@ func main() {
 	if timing {
 		fmt.Printf("Pathing %s \n", time.Since(step1))
 	}
-	// for _, line := range convex {
+	// for _, line := range area {
 	// 	fmt.Println(line)
 	// }
 }
