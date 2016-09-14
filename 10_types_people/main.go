@@ -46,10 +46,18 @@ func main() {
 			}
 			zone++
 		}
-		for _, line := range convex {
-			fmt.Println(line)
+		if convex[r2][c2] == 0 {
+			convex, zoneMap = propagate(area, convex, zoneMap, r2, c2, r1, c1, zone)
+			_, maped := zoneMap[zone]
+			if !maped {
+				zoneMap[zone] = zone
+			}
+			zone++
 		}
-		fmt.Println(zoneMap)
+		// for _, line := range convex {
+		// 	fmt.Println(line)
+		// }
+		// fmt.Println(zoneMap)
 		// fmt.Println(convex[r1][c1])
 		// fmt.Println(convex[r2][c2])
 		if zoneMap[convex[r1][c1]] != zoneMap[convex[r2][c2]] {
