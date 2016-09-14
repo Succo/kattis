@@ -47,7 +47,7 @@ func main() {
 		c1 = c1 - 1
 		r2 = r2 - 1
 		c2 = c2 - 1
-		fmt.Printf("%d ", i)
+		// fmt.Printf("%d ", i)
 		if area[r1][c1] != area[r2][c2] {
 			if !timing {
 				fmt.Println("neither")
@@ -75,7 +75,7 @@ func main() {
 	if timing {
 		fmt.Printf("Pathing %s \n", time.Since(step1))
 	}
-	printArea(area, convex)
+	// printArea(area, convex)
 }
 
 func propagate(area []string, convex [][]int, startI int, startJ int, zone int) [][]int {
