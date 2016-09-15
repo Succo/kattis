@@ -1,0 +1,8 @@
+print "No bugs here..."
+
+void hello() {
+
+  printf("Hello, world!\n");
+}
+
+writeln("Hello E-R-R");
