@@ -1,36 +1,46 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"time"
 )
 
 const (
 	mod = 1000000007
 )
 
-func getPermutSum(input string, numberOfOne int, numberOfPermut int) int {
+func getPermutSum(input string) (int, int, int) {
 	if len(input) == 0 {
-		return 0
+		return 0, 0, 1
 	}
 	if input[0] == '0' {
-		case0 := numberOfOne + getPermutSum(input[1:], numberOfOne, numberOfPermut+numberOfOne)
-		return case0
+		permuts, zeros, paths := getPermutSum(input[1:])
+		return permuts, zeros + paths, paths
 	}
 	if input[0] == '1' {
-		case1 := getPermutSum(input[1:], numberOfOne+1, numberOfPermut)
-		return case1
+		permut, zeros, paths := getPermutSum(input[1:])
+		return permut + zeros, zeros, paths
 	}
 	if input[0] == '?' {
-		if0 := numberOfOne + getPermutSum(input[1:], numberOfOne, numberOfPermut+numberOfOne)
-		if1 := getPermutSum(input[1:], numberOfOne+1, numberOfPermut)
-		return numberOfPermut + if0 + if1
+		permut, zeros, paths := getPermutSum(input[1:])
+		return 2*permut + zeros, 2*zeros + paths, paths * 2
 	}
 	panic("invalid character")
 }
 
 func main() {
-	var input string
-	fmt.Scanln(&input)
-	sum := getPermutSum(input, 0, 0)
+	in := bufio.NewReader(os.Stdin)
+	now := time.Now()
+
+	input, err := in.ReadString('\n')
+	if err != nil {
+		panic("error reading stdin")
+	}
+
+	input = input[:len(input)-1]
+	sum, _, _ := getPermutSum(input)
 	fmt.Printf("%d\n", sum%mod)
+	fmt.Println(time.Since(now))
 }
