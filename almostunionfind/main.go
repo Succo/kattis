@@ -7,7 +7,7 @@ import (
 )
 
 type sets struct {
-	list []map[int]bool
+	list []int
 	out  *bufio.Writer
 }
 
@@ -17,9 +17,9 @@ func main() {
 	for {
 		var n, m int
 		fmt.Fscanln(in, &n, &m)
-		s := &sets{make([]map[int]bool, n), out}
+		s := &sets{make([]int, n), out}
 		for i := range s.list {
-			s.list[i] = map[int]bool{i + 1: true}
+			s.list[i] = i
 		}
 		for i := 0; i < m; i++ {
 			var com, p, q int
@@ -39,62 +39,28 @@ func main() {
 }
 
 func (s *sets) union(p, q int) {
-	setp := -1
-	setq := -1
+	setp := s.list[p-1]
+	setq := s.list[q-1]
 	for key, set := range s.list {
-		_, ok := set[p]
-		if ok {
-			setp = key
-		}
-		_, ok = set[q]
-		if ok {
-			setq = key
-		}
-		if setp != -1 && setq != -1 {
-			break
+		if set == setp {
+			s.list[key] = setq
 		}
 	}
-	for key, _ := range s.list[setp] {
-		s.list[setq][key] = true
-	}
-	s.list[setp] = make(map[int]bool)
 }
 
 func (s *sets) move(p, q int) {
-	setp := -1
-	setq := -1
-	for key, set := range s.list {
-		_, ok := set[p]
-		if ok {
-			setp = key
-		}
-		_, ok = set[q]
-		if ok {
-			setq = key
-		}
-		if setp != -1 && setq != -1 {
-			break
-		}
-	}
-	s.list[setq][p] = true
-	delete(s.list[setp], p)
+	s.list[p-1] = s.list[q-1]
 }
 
 func (s *sets) output(p int) {
-	for _, set := range s.list {
-		_, ok := set[p]
-		if ok {
-			fmt.Fprintf(s.out, "%d %d\n", len(set), sum(set))
-			s.out.Flush()
-			break
+	var sum, len int
+	setp := s.list[p-1]
+	for key, set := range s.list {
+		if set == setp {
+			sum += key + 1
+			len++
 		}
 	}
-}
-
-func sum(set map[int]bool) int {
-	var sum int
-	for key, _ := range set {
-		sum += key
-	}
-	return sum
+	fmt.Fprintf(s.out, "%d %d\n", len, sum)
+	s.out.Flush()
 }
