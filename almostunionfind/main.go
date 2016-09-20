@@ -7,7 +7,7 @@ import (
 )
 
 type sets struct {
-	list [][]int
+	list map[int]int
 	out  *bufio.Writer
 }
 
@@ -17,9 +17,9 @@ func main() {
 	for {
 		var n, m int
 		fmt.Fscanln(in, &n, &m)
-		s := &sets{make([][]int, n), out}
-		for i := range s.list {
-			s.list[i] = []int{i + 1}
+		s := &sets{make(map[int]int), out}
+		for i := 0; i < n; i++ {
+			s.list[i] = i
 		}
 		for i := 0; i < m; i++ {
 			var com, p, q int
@@ -39,89 +39,26 @@ func main() {
 }
 
 func (s *sets) union(p, q int) {
-	posp := -1
-	posq := -1
-	setp := -1
-	setq := -1
-	for i, set := range s.list {
-		posi := pos(set, p)
-		if posi > -1 {
-			posp = posi
-			setp = i
-		}
-
-		posi = pos(set, q)
-		if posi > -1 {
-			posq = posi
-			setq = i
-		}
-
-		if posq > -1 && posp > -1 {
-			break
+	set := s.list[p-1]
+	for key, value := range s.list {
+		if value == set {
+			s.list[key] = s.list[q-1]
 		}
 	}
-	if setq == setp {
-		return
-	}
-	s.list[setq] = append(s.list[setq], s.list[setp]...)
-	s.list[setp] = []int{}
 }
 
 func (s *sets) move(p, q int) {
-	posp := -1
-	posq := -1
-	setp := -1
-	setq := -1
-	for i, set := range s.list {
-		posi := pos(set, p)
-		if posi > -1 {
-			posp = posi
-			setp = i
-		}
-
-		posi = pos(set, q)
-		if posi > -1 {
-			posq = posi
-			setq = i
-		}
-
-		if posq > -1 && posp > -1 {
-			break
-		}
-	}
-	if setq == setp {
-		return
-	}
-	s.list[setp][posp] = s.list[setp][len(s.list[setp])-1]
-	s.list[setp] = s.list[setp][:len(s.list[setp])-1]
-	s.list[setq] = append(s.list[setq], p)
-
+	s.list[p-1] = s.list[q-1]
 }
 
 func (s *sets) output(p int) {
-	for _, set := range s.list {
-		posi := pos(set, p)
-		if posi > -1 {
-			fmt.Fprintf(s.out, "%d %d\n", len(set), sum(set))
-			s.out.Flush()
-			break
+	var sum, len int
+	for key, value := range s.list {
+		if value == s.list[p-1] {
+			sum += key + 1
+			len++
 		}
 	}
-}
-
-func sum(l []int) int {
-	var res int
-	for _, val := range l {
-		res += val
-	}
-	return res
-}
-
-func pos(l []int, p int) int {
-	for i, val := range l {
-		if val == p {
-			return i
-		}
-	}
-	return -1
+	fmt.Fprintf(s.out, "%d %d\n", len, sum)
+	s.out.Flush()
 }
