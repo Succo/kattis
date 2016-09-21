@@ -15,21 +15,24 @@ const (
 	cases = 100
 )
 
-func TestRandom(t *testing.T) {
+func BenchmarkRandom(b *testing.B) {
 	rand.Seed(time.Now().UnixNano())
-	var prints, unions, moves time.Duration
+	var prints, unions, moves, init time.Duration
 	file, _ := os.Open(os.DevNull)
 	out := bufio.NewWriter(file)
 	for c := 0; c < cases; c++ {
 		s := &sets{make([]int, size), make([][]int, size), make([]int, size), make([]int, size), out}
+		now := time.Now()
 		for i := range s.list {
 			s.list[i] = i
 			s.sets[i] = []int{i}
+			s.lens[i] = 1
+			s.sums[i] = i + 1
 		}
+		init += time.Since(now)
 		for i := 0; i < query; i++ {
 			var com, p, q int
 			com = rand.Intn(3) + 1
-			//com = 1
 			p = rand.Intn(size) + 1
 			q = rand.Intn(size) + 1
 			if com == 1 {
@@ -47,10 +50,9 @@ func TestRandom(t *testing.T) {
 			}
 		}
 	}
+	out.Flush()
+	fmt.Printf("init %s\n", init.String())
 	fmt.Printf("unions %s\n", unions.String())
 	fmt.Printf("moves %s\n", moves.String())
 	fmt.Printf("prints %s\n", prints.String())
-	fmt.Printf("list update %s\n", listUpdate.String())
-	fmt.Printf("set update %s\n", setUpdate.String())
-	fmt.Printf("pRemoval %s\n", pRemoval.String())
 }

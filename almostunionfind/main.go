@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"time"
 )
 
 type sets struct {
@@ -14,12 +13,6 @@ type sets struct {
 	sums []int
 	out  *bufio.Writer
 }
-
-var (
-	listUpdate = 0 * time.Nanosecond
-	setUpdate  = 0 * time.Nanosecond
-	pRemoval   = 0 * time.Nanosecond
-)
 
 func main() {
 	in := bufio.NewReader(os.Stdin)
@@ -51,6 +44,7 @@ func main() {
 			break
 		}
 	}
+	out.Flush()
 }
 
 func (s *sets) union(p, q int) {
@@ -61,13 +55,10 @@ func (s *sets) union(p, q int) {
 		return
 	}
 
-	now := time.Now()
 	for _, val := range s.sets[setp] {
 		s.list[val] = setq
 	}
-	listUpdate += time.Since(now)
 
-	now = time.Now()
 	var set []int
 	if s.lens[setp] > s.lens[setq] {
 		set = append(s.sets[setp], s.sets[setq]...)
@@ -75,9 +66,6 @@ func (s *sets) union(p, q int) {
 		set = append(s.sets[setq], s.sets[setp]...)
 	}
 	s.sets[setq] = set
-
-	//s.sets[setp] = make([]int, 0)
-	setUpdate += time.Since(now)
 
 	s.lens[setq] += s.lens[setp]
 	s.lens[setp] = 0
@@ -103,9 +91,7 @@ func (s *sets) move(p, q int) {
 	s.sums[setq] += p
 	s.sums[setp] -= p
 
-	now := time.Now()
 	if len(s.sets[setp]) == 1 {
-		s.sets[setp] = make([]int, 0)
 		return
 	}
 
@@ -119,10 +105,8 @@ func (s *sets) move(p, q int) {
 
 	s.sets[setp][pIndex] = s.sets[setp][len(s.sets[setp])-1]
 	s.sets[setp] = s.sets[setp][:len(s.sets[setp])-1]
-	pRemoval += time.Since(now)
 }
 
 func (s *sets) output(p int) {
 	fmt.Fprintf(s.out, "%d %d\n", s.lens[s.list[p-1]], s.sums[s.list[p-1]])
-	s.out.Flush()
 }
