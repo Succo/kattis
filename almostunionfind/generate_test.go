@@ -12,7 +12,7 @@ import (
 const (
 	size  = 100000
 	query = 100000
-	cases = 20
+	cases = 100
 )
 
 func TestRandom(t *testing.T) {
@@ -21,7 +21,7 @@ func TestRandom(t *testing.T) {
 	file, _ := os.Open(os.DevNull)
 	out := bufio.NewWriter(file)
 	for c := 0; c < cases; c++ {
-		s := &sets{make([]int, size), make([][]int, size), out}
+		s := &sets{make([]int, size), make([][]int, size), make([]int, size), make([]int, size), out}
 		for i := range s.list {
 			s.list[i] = i
 			s.sets[i] = []int{i}
@@ -29,6 +29,7 @@ func TestRandom(t *testing.T) {
 		for i := 0; i < query; i++ {
 			var com, p, q int
 			com = rand.Intn(3) + 1
+			//com = 1
 			p = rand.Intn(size) + 1
 			q = rand.Intn(size) + 1
 			if com == 1 {
@@ -49,4 +50,7 @@ func TestRandom(t *testing.T) {
 	fmt.Printf("unions %s\n", unions.String())
 	fmt.Printf("moves %s\n", moves.String())
 	fmt.Printf("prints %s\n", prints.String())
+	fmt.Printf("list update %s\n", listUpdate.String())
+	fmt.Printf("set update %s\n", setUpdate.String())
+	fmt.Printf("pRemoval %s\n", pRemoval.String())
 }

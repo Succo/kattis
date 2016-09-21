@@ -23,22 +23,22 @@ func main() {
 				out.Write(line)
 				continue
 			}
-			subLines := bytes.Split(line, bug)
-			for len(subLines) > 1 {
-				var buffer bytes.Buffer
-				for _, subLine := range subLines {
-					buffer.Write(subLine)
+
+			n := make([]byte, len(line))
+			for {
+				i := bytes.Index(line, bug)
+				if i == -1 {
+					break
 				}
-				line, err = buffer.ReadBytes('\n')
-				if err != nil {
-					panic("Reading line from buffer failure")
-				}
-				subLines = bytes.Split(line, bug)
+				copy(n[0:], line[:i])
+				copy(n[i:], line[i+len(bug):len(line)])
+				line = n
+				n = make([]byte, len(line))
 			}
-			out.Write(subLines[0])
+			out.Write(line)
+			out.Flush()
 		}
 
-		out.Flush()
 		if in.Buffered() == 0 {
 			break
 		}

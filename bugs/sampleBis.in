@@ -1,0 +1,7 @@
+6 AZA
+print "No bugs here..."
+
+void hello() {
+AAZAZAZA
+  printf("Hello, world!\n");
+}

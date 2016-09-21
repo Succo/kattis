@@ -16,9 +16,9 @@ const (
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	for i := 0; i < 250; i++ {
-		lines := 50000 + rand.Intn(50000)
-		bug := randString(rand.Intn(999)+1, maj)
+	for i := 0; i < 10; i++ {
+		lines := 500 + rand.Intn(500)
+		bug := randString(rand.Intn(90)+1, maj)
 		fmt.Printf("%d %s\n", lines, bug)
 		for j := 0; j < lines; j++ {
 			fmt.Println(randLines(bug))
@@ -40,7 +40,7 @@ func randString(n int, letter string) string {
 
 func randLines(bug string) string {
 	var buffer bytes.Buffer
-	for i := 0; i < (rand.Intn(1000000) + 1000000); i++ {
+	for i := 0; i < (rand.Intn(1000) + 1000); i++ {
 		if rand.Intn(10) > 9 {
 			buffer.WriteString(bug)
 		} else {
