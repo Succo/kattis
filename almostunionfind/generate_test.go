@@ -21,12 +21,12 @@ func BenchmarkRandom(b *testing.B) {
 	file, _ := os.Open(os.DevNull)
 	out := bufio.NewWriter(file)
 	for c := 0; c < cases; c++ {
-		s := &sets{make([]int, size), make([][]int, size), make([]int, size), make([]int, size), out}
 		now := time.Now()
-		for i := range s.list {
-			s.list[i] = i
-			s.sets[i] = []int{i}
+		s := &sets{make([]int, size), make([][]int, size), make([]int, size), make([]int, size), out}
+		for i := range s.dads {
+			s.dads[i] = -1
 			s.lens[i] = 1
+			s.sons[i] = []int{}
 			s.sums[i] = i + 1
 		}
 		init += time.Since(now)
