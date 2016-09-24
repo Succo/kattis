@@ -128,13 +128,6 @@ func (s *sets) move(p, q int) {
 			}
 		}
 
-		if pIndex == -1 {
-			s.drawTree()
-			fmt.Println(sons)
-			fmt.Println(p)
-			fmt.Println(root)
-			panic("should not happen")
-		}
 		s.dads[p-1] = setq
 		s.lens[setq] += 1
 		s.sums[setq] += p
@@ -145,7 +138,13 @@ func (s *sets) move(p, q int) {
 			s.sons[root] = sons[:len(sons)-1]
 		} else {
 			sons[pIndex] = s.sons[p-1][0]
-			s.sons[root] = append(sons, s.sons[p-1][1:]...)
+
+			if len(sons) > len(s.sons[p-1][1:]) {
+				s.sons[root] = append(sons, s.sons[p-1][1:]...)
+			} else {
+				s.sons[root] = append(s.sons[p-1][1:], sons...)
+			}
+
 			for _, son := range s.sons[p-1] {
 				s.dads[son] = root
 			}
@@ -157,53 +156,4 @@ func (s *sets) move(p, q int) {
 func (s *sets) output(p int) {
 	set := s.getSet(p - 1)
 	fmt.Fprintf(s.out, "%d %d\n", s.lens[set], s.sums[set])
-}
-
-func (s *sets) totalSum() int {
-	var total int
-	for _, sum := range s.sums {
-		total += sum
-	}
-	return total
-}
-
-func (s *sets) totalLen() int {
-	var total int
-	for _, len := range s.lens {
-		total += len
-	}
-	return total
-}
-
-func (s *sets) drawTree() {
-	for i, sum := range s.sums {
-		if sum != 0 {
-			s.draw(i)
-			fmt.Println("")
-		}
-	}
-}
-
-func (s *sets) draw(i int) {
-	fmt.Printf("%d ", i)
-	for _, son := range s.sons[i] {
-		s.draw(son)
-	}
-}
-
-func (s *sets) assertTree() {
-	for i, dad := range s.dads {
-		if dad != -1 {
-			s.assertFils(dad, i)
-		}
-	}
-}
-
-func (s *sets) assertFils(dad, i int) {
-	for _, fil := range s.sons[dad] {
-		if fil == i {
-			return
-		}
-	}
-	panic(fmt.Sprintf("improper fils %d dad %d", i, dad))
 }

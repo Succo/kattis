@@ -1,0 +1,23 @@
+New with list of sons and tree
+init 548.710768ms
+unions 1.148487035s
+moves 1.298589569s
+prints 1.906124374s
+BenchmarkRandom-4              1        7102751214 ns/op
+
+init 504.877482ms
+unions 3m50.561091779s
+moves 0s
+prints 0s
+BenchmarkRandom-4              1        232812958828 ns/op
+
+
+
+
+Old with list of set, no tree
+init 470.405667ms
+unions 1.833218666s
+moves 1.344112306s
+prints 1.789629601s
+BenchmarkRandom-4              1        8079945926 ns/op
+
