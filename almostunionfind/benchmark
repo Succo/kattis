@@ -21,3 +21,9 @@ moves 1.344112306s
 prints 1.789629601s
 BenchmarkRandom-4              1        8079945926 ns/op
 
+init 364.725543ms
+unions 2m55.772430291s
+moves 0s
+prints 0s
+BenchmarkRandom-4              1        178173096378 ns/op
+
